@@ -47,7 +47,10 @@ export default [
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 
       // Naming Conventions
-      'id-length': ['error', { min: 2, exceptions: ['i', 'j', 'k', 'x', 'y', 'z'] }],
+      'id-length': [
+        'error',
+        { min: 2, exceptions: ['i', 'j', 'k', 'x', 'y', 'z'] },
+      ],
       'no-underscore-dangle': 'error',
       'func-names': 'error',
 
@@ -68,7 +71,7 @@ export default [
       'template-curly-spacing': 'error',
 
       // Complexity
-      'complexity': ['warn', 10],
+      complexity: ['warn', 10],
       'max-depth': ['warn', 4],
       'max-lines': ['warn', 300],
       'max-lines-per-function': ['warn', 50],
@@ -79,14 +82,14 @@ export default [
       'array-bracket-spacing': ['error', 'never'],
       'block-spacing': 'error',
       'brace-style': ['error', '1tbs'],
-      'camelcase': 'error',
+      camelcase: 'error',
       'comma-dangle': ['error', 'always-multiline'],
       'comma-spacing': ['error', { before: false, after: true }],
       'comma-style': ['error', 'last'],
       'computed-property-spacing': ['error', 'never'],
       'eol-last': 'error',
       'func-call-spacing': ['error', 'never'],
-      'indent': ['error', 2],
+      indent: ['error', 2],
       'key-spacing': ['error', { beforeColon: false, afterColon: true }],
       'keyword-spacing': ['error', { before: true, after: true }],
       'linebreak-style': ['error', 'unix'],
@@ -97,11 +100,14 @@ export default [
       'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
       'no-trailing-spaces': 'error',
       'object-curly-spacing': ['error', 'always'],
-      'object-property-newline': ['error', { allowMultiplePropertiesPerLine: true }],
+      'object-property-newline': [
+        'error',
+        { allowMultiplePropertiesPerLine: true },
+      ],
       'operator-linebreak': ['error', 'before'],
       'padded-blocks': ['error', 'never'],
-      'quotes': ['error', 'single'],
-      'semi': ['error', 'always'],
+      quotes: ['error', 'single'],
+      semi: ['error', 'always'],
       'semi-spacing': ['error', { before: false, after: true }],
       'semi-style': ['error', 'last'],
       'space-before-blocks': 'error',
@@ -123,7 +129,10 @@ export default [
       'no-path-concat': 'error',
 
       // TypeScript specific rules (STRICT)
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-var-requires': 'error',
       '@typescript-eslint/type-annotation-spacing': 'error',
@@ -157,4 +166,4 @@ export default [
     },
   },
   prettier,
-]; 
+];
