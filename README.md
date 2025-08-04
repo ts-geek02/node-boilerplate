@@ -22,12 +22,14 @@ Before running this project, make sure you have the following installed:
 ## 🛠️ Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd linter-auto-backend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -40,12 +42,14 @@ Before running this project, make sure you have the following installed:
 ## 🚀 Available Scripts
 
 ### Development
+
 - `npm run dev` - Start development server with auto-restart
 - `npm start` - Start production server
 - `npm run build` - Build TypeScript to JavaScript
 - `npm run build:watch` - Build TypeScript with watch mode
 
 ### Code Quality
+
 - `npm run lint` - Run ESLint to check code quality
 - `npm run lint:fix` - Run ESLint and automatically fix issues
 - `npm run type-check` - Run TypeScript compiler for type checking
@@ -53,6 +57,7 @@ Before running this project, make sure you have the following installed:
 - `npm run format:check` - Check if code is properly formatted
 
 ### Git Hooks
+
 - `npm run validate-pr` - Validate pull request descriptions
 
 ## 🏗️ Project Structure
@@ -84,22 +89,26 @@ linter-auto-backend/
 ## 🔧 Configuration Files
 
 ### TypeScript (`tsconfig.json`)
+
 - Strict type checking enabled
 - ES2020 target
 - CommonJS module system
 
 ### ESLint (`eslint.config.js`)
+
 - TypeScript-aware linting
 - Prettier integration
 - Import sorting
 
 ### Prettier
+
 - Consistent code formatting
 - Integrated with ESLint
 
 ## 🐛 Development Workflow
 
 1. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -116,6 +125,7 @@ linter-auto-backend/
 ## 📝 Code Style
 
 This project uses:
+
 - **ESLint** for code linting
 - **Prettier** for code formatting
 - **Husky** for pre-commit hooks
@@ -126,10 +136,12 @@ All code is automatically formatted and linted before commits.
 ## 🧪 Testing
 
 Currently, the project includes test files:
+
 - `test-clean.ts`
 - `test-linter-errors.ts`
 
 Run tests with:
+
 ```bash
 npm test
 ```
@@ -137,6 +149,7 @@ npm test
 ## 🚀 Deployment
 
 1. **Build the project**
+
    ```bash
    npm run build
    ```
@@ -145,7 +158,6 @@ npm test
    ```bash
    npm start
    ```
-
 
 ## Pull Request Validation
 

@@ -46,7 +46,10 @@ export default [
       'no-new-func': 'error',
       'no-script-url': 'error',
       'no-unused-vars': 'off', // Use TypeScript version instead
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
 
       // Naming Conventions
       'id-length': [
