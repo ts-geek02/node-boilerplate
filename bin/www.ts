@@ -68,11 +68,13 @@ function onError(error: Error & { code?: string; syscall?: string }): void {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
+      // eslint-disable-next-line no-console
       console.error(`${bind} requires elevated privileges`);
       // eslint-disable-next-line no-process-exit
       process.exit(1);
     // eslint-disable-next-line no-fallthrough
     case 'EADDRINUSE':
+      // eslint-disable-next-line no-console
       console.error(`${bind} is already in use`);
       // eslint-disable-next-line no-process-exit
       process.exit(1);

@@ -12,6 +12,128 @@ A Node.js Express application built with TypeScript, featuring automated linting
 - **Nodemon**: Auto-restart on file changes during development
 - **Jade Templates**: Server-side templating engine
 
+## 📋 Prerequisites
+
+Before running this project, make sure you have the following installed:
+
+- **Node.js** (version 18 or higher)
+- **npm** (comes with Node.js)
+
+## 🛠️ Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd linter-auto-backend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up Git hooks** (automatically done by the prepare script)
+   ```bash
+   npm run prepare
+   ```
+
+## 🚀 Available Scripts
+
+### Development
+- `npm run dev` - Start development server with auto-restart
+- `npm start` - Start production server
+- `npm run build` - Build TypeScript to JavaScript
+- `npm run build:watch` - Build TypeScript with watch mode
+
+### Code Quality
+- `npm run lint` - Run ESLint to check code quality
+- `npm run lint:fix` - Run ESLint and automatically fix issues
+- `npm run type-check` - Run TypeScript compiler for type checking
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check if code is properly formatted
+
+### Git Hooks
+- `npm run validate-pr` - Validate pull request descriptions
+
+## 🏗️ Project Structure
+
+```
+linter-auto-backend/
+├── bin/
+│   └── www.ts              # Application entry point
+├── routes/
+│   ├── index.ts            # Home route
+│   └── users.ts            # Users API routes
+├── views/
+│   ├── error.jade          # Error page template
+│   ├── index.jade          # Home page template
+│   └── layout.jade         # Layout template
+├── scripts/
+│   └── validate-pr-description.ts  # PR validation script
+├── app.ts                  # Express application setup
+├── package.json            # Project dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+└── eslint.config.js        # ESLint configuration
+```
+
+## 🌐 API Endpoints
+
+- `GET /` - Home page
+- `GET /users` - Users listing
+
+## 🔧 Configuration Files
+
+### TypeScript (`tsconfig.json`)
+- Strict type checking enabled
+- ES2020 target
+- CommonJS module system
+
+### ESLint (`eslint.config.js`)
+- TypeScript-aware linting
+- Prettier integration
+- Import sorting
+
+### Prettier
+- Consistent code formatting
+- Integrated with ESLint
+
+## 🐛 Development Workflow
+
+1. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+2. **Make code changes** - The server will automatically restart
+
+3. **Before committing** - Code is automatically formatted and linted via Git hooks
+
+4. **Type checking**
+   ```bash
+   npm run type-check
+   ```
+
+## 📝 Code Style
+
+This project uses:
+- **ESLint** for code linting
+- **Prettier** for code formatting
+- **Husky** for pre-commit hooks
+- **lint-staged** for staged file processing
+
+All code is automatically formatted and linted before commits.
+
+## 🧪 Testing
+
+Currently, the project includes test files:
+- `test-clean.ts`
+- `test-linter-errors.ts`
+
+Run tests with:
+```bash
+npm test
+```
+
 ## 🚀 Deployment
 
 1. **Build the project**

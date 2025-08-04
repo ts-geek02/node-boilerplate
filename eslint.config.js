@@ -8,6 +8,7 @@ export default [
   {
     ignores: ['dist/**', 'node_modules/**', '*.d.ts'],
   },
+
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -44,7 +45,8 @@ export default [
       'no-implied-eval': 'error',
       'no-new-func': 'error',
       'no-script-url': 'error',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': 'off', // Use TypeScript version instead
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 
       // Naming Conventions
       'id-length': [
@@ -128,13 +130,8 @@ export default [
       'no-process-exit': 'error',
       'no-path-concat': 'error',
 
-      // TypeScript specific rules (STRICT)
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_' },
-      ],
+      // TypeScript specific rules
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-var-requires': 'error',
       '@typescript-eslint/type-annotation-spacing': 'error',
       '@typescript-eslint/no-array-constructor': 'error',
       '@typescript-eslint/no-inferrable-types': 'error',
