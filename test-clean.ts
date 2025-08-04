@@ -73,7 +73,7 @@ async function fetchUserData(userId: number): Promise<User | null> {
 }
 
 // Use the app to avoid unused variable warning
-app.get('/users', (req, res) => {
+app.get('/users', (_req, res) => {
   res.json(userService.getAllUsers());
 });
 
