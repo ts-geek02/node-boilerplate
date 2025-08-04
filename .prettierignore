@@ -2,8 +2,9 @@
 node_modules/
 
 # Build outputs
-dist/
+out/
 build/
+dist/
 
 # Package files
 package-lock.json
