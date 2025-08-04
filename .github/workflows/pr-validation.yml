@@ -1,0 +1,70 @@
+name: PR Description Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  validate-pr-description:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Validate PR Description
+        id: validate
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          OUTPUT=$(node scripts/validate-pr-description.js "$PR_BODY" 2>&1 || true)
+          echo "$OUTPUT"
+          MISSING_SECTIONS=$(echo "$OUTPUT" | grep "MISSING_SECTIONS=" | sed 's/MISSING_SECTIONS="//' | sed 's/"$//' || echo "")
+          echo "missing_sections<<EOF" >> $GITHUB_OUTPUT
+          echo "$MISSING_SECTIONS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          if echo "$OUTPUT" | grep -q "PR description validation failed"; then
+            exit 1
+          fi
+
+      - name: Comment on PR
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const missingSections = '${{ steps.validate.outputs.missing_sections }}';
+            const commentBody = `## PR Description Validation Failed
+
+The PR description does not meet the required standards. Please ensure your PR description includes all required sections from the template.
+
+**Missing sections:**
+${missingSections || 'Please check the template for all required sections.'}
+
+**Template reference:** \`.github/pull_request_template.md\`
+
+Please update your PR description and the validation will re-run automatically.`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
+
+      - name: Comment on PR Success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## PR Description Validation Passed
+
+Your PR description meets all the required standards! The PR is ready for review.`
+            }); 

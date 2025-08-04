@@ -12,6 +12,7 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "validate-pr": "node scripts/validate-pr-description.js",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -44,7 +45,8 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "prettier --write",
-      "eslint --fix"
+      "eslint --fix",
+      "git add"
     ],
     "*.json": [
       "prettier --write"

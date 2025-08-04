@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run linting and formatting checks
+npm run lint
+npm run format:check
+npm run type-check
+
+# Optional: Check if we're on a branch that might be a PR
+# This is a basic check - for full validation, use the GitHub Actions workflow
+if [ -n "$(git log --oneline -1 | grep -E '^(feat|fix|docs|style|refactor|test|chore)')" ]; then
+  echo "📝 Detected conventional commit format. Consider validating PR description when creating PR."
+  echo "   Use: npm run validate-pr \"<PR_DESCRIPTION>\""
+fi 

@@ -28,3 +28,6 @@ coverage/
 # OS files
 .DS_Store
 Thumbs.db 
+
+# GitHub Actions workflows (YAML formatting conflicts)
+.github/workflows/ 
