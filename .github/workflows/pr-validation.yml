@@ -4,6 +4,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
+permissions:
+  pull-requests: write
+  issues: write
+  checks: write
+
 jobs:
   validate-pr-description:
     runs-on: ubuntu-latest
@@ -21,32 +26,56 @@ jobs:
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          OUTPUT=$(node scripts/validate-pr-description.js "$PR_BODY" 2>&1 || true)
+          # Check if PR body is empty, null, or just whitespace
+          if [ -z "$PR_BODY" ] || [ "$PR_BODY" = "null" ] || [ "$PR_BODY" = "" ] || [ "$(echo "$PR_BODY" | tr -d '[:space:]')" = "" ]; then
+            echo "❌ PR description is empty, null, or contains only whitespace"
+            echo "validation_failed=true" >> $GITHUB_OUTPUT
+            echo "missing_sections=All required sections are missing - PR description is empty" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          # Run the TypeScript validation script
+          OUTPUT=$(npx ts-node scripts/validate-pr-description.ts "$PR_BODY" 2>&1 || true)
           echo "$OUTPUT"
+          
+          # Extract missing sections from the output
           MISSING_SECTIONS=$(echo "$OUTPUT" | grep "MISSING_SECTIONS=" | sed 's/MISSING_SECTIONS="//' | sed 's/"$//' || echo "")
-          echo "missing_sections<<EOF" >> $GITHUB_OUTPUT
-          echo "$MISSING_SECTIONS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          if echo "$OUTPUT" | grep -q "PR description validation failed"; then
+          
+          # Check if validation failed
+          if echo "$OUTPUT" | grep -q "❌ PR description validation failed" || echo "$OUTPUT" | grep -q "❌ PR description is empty"; then
+            echo "validation_failed=true" >> $GITHUB_OUTPUT
+            if [ -n "$MISSING_SECTIONS" ]; then
+              echo "missing_sections<<EOF" >> $GITHUB_OUTPUT
+              echo "$MISSING_SECTIONS" >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
+            else
+              echo "missing_sections=PR description validation failed - check the template requirements" >> $GITHUB_OUTPUT
+            fi
+            exit 1
+          fi
+          
+          # Check if validation passed
+          if echo "$OUTPUT" | grep -q "✅ PR description is valid"; then
+            echo "validation_failed=false" >> $GITHUB_OUTPUT
+            echo "✅ PR description validation passed"
+          else
+            echo "validation_failed=true" >> $GITHUB_OUTPUT
+            echo "missing_sections=Unexpected validation result" >> $GITHUB_OUTPUT
             exit 1
           fi
 
-      - name: Comment on PR
-        if: failure()
+      - name: Comment on PR Failure
+        if: failure() || steps.validate.outputs.validation_failed == 'true'
         uses: actions/github-script@v7
         with:
           script: |
             const missingSections = '${{ steps.validate.outputs.missing_sections }}';
-            const commentBody = `## PR Description Validation Failed
-
-The PR description does not meet the required standards. Please ensure your PR description includes all required sections from the template.
-
-**Missing sections:**
-${missingSections || 'Please check the template for all required sections.'}
-
-**Template reference:** \`.github/pull_request_template.md\`
-
-Please update your PR description and the validation will re-run automatically.`;
+            const commentBody = '## PR Description Validation Failed ❌\n\n' +
+              'The PR description does not meet the required standards. **This PR cannot be merged until the description is updated.**\n\n' +
+              '**Missing sections:**\n' +
+              (missingSections || 'Please check the template for all required sections.') + '\n\n' +
+              '**Template reference:** `.github/pull_request_template.md`\n\n' +
+              'Please update your PR description and the validation will re-run automatically.';
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -56,7 +85,7 @@ Please update your PR description and the validation will re-run automatically.`
             });
 
       - name: Comment on PR Success
-        if: success()
+        if: success() && steps.validate.outputs.validation_failed != 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -64,7 +93,6 @@ Please update your PR description and the validation will re-run automatically.`
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## PR Description Validation Passed
-
-Your PR description meets all the required standards! The PR is ready for review.`
+              body: '## PR Description Validation Passed ✅\n\n' +
+                'Your PR description meets all the required standards! The PR is ready for review.'
             }); 

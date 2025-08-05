@@ -2,11 +2,13 @@
   "compilerOptions": {
     "target": "ES2021",
     "module": "commonjs",
+    "moduleResolution": "node",
     "lib": ["ES2021"],
     "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
@@ -24,7 +26,8 @@
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "allowUnusedLabels": false,
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+    "types": ["node"]
   },
   "include": ["**/*.ts", "**/*.js"],
   "exclude": ["node_modules", "dist", "coverage", "*.test.js", "*.spec.js"]
