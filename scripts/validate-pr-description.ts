@@ -28,7 +28,7 @@ function extractHeadersFromTemplate(): string[] {
     const headerRegex = /^### .+$/gm;
     const headers = templateContent.match(headerRegex) || [];
 
-    return headers.map(header => header.trim());
+    return headers.map((header: string) => header.trim());
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('❌ Error reading template file:', (error as Error).message);
@@ -54,7 +54,7 @@ function validatePRDescription(prBody: string): ValidationResult {
   // Debug: Print the headers we're looking for
   // eslint-disable-next-line no-console
   console.log('🔍 Required headers from template:');
-  requiredHeaders.forEach(header => {
+  requiredHeaders.forEach((header: string) => {
     // eslint-disable-next-line no-console
     console.log(`   • ${header}`);
   });
@@ -85,7 +85,7 @@ function printResults(results: ValidationResult): void {
   } else {
     // eslint-disable-next-line no-console
     console.log('❌ PR description validation failed:');
-    results.errors.forEach(error => {
+    results.errors.forEach((error: string) => {
       // eslint-disable-next-line no-console
       console.log(`   • ${error}`);
     });
@@ -94,7 +94,7 @@ function printResults(results: ValidationResult): void {
   if (results.missingHeaders && results.missingHeaders.length > 0) {
     // eslint-disable-next-line no-console
     console.log('\n📝 Missing required sections:');
-    results.missingHeaders.forEach(header => {
+    results.missingHeaders.forEach((header: string) => {
       // eslint-disable-next-line no-console
       console.log(`   • ${header}`);
     });
@@ -122,7 +122,7 @@ printResults(results);
 // Output missing sections for GitHub Actions
 if (!results.isValid && results.missingHeaders) {
   const missingSectionsText = results.missingHeaders
-    .map(header => `- ${header}`)
+    .map((header: string) => `- ${header}`)
     .join('\n');
   // eslint-disable-next-line no-console
   console.log(`MISSING_SECTIONS="${missingSectionsText}"`);
