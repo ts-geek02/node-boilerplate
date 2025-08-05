@@ -1,238 +1,106 @@
-# Linter Auto Backend
+# Node Boilerplate
 
-A Node.js Express application built with TypeScript, featuring automated linting, code formatting, and development tools.
+A Node.js boilerplate with Express, TypeScript, and modern development tools.
 
-## 🚀 Features
+## Features
 
-- **TypeScript**: Full TypeScript support with strict type checking
-- **Express.js**: Fast, unopinionated web framework for Node.js
-- **ESLint**: Code linting with TypeScript support
-- **Prettier**: Code formatting
-- **Husky**: Git hooks for pre-commit linting
-- **Nodemon**: Auto-restart on file changes during development
-- **Jade Templates**: Server-side templating engine
+- Express.js server with TypeScript
+- ESLint and Prettier for code quality
+- Husky for Git hooks
+- GitHub Actions for CI/CD
+- PR description validation
+- Branch protection rules
 
-## 📋 Prerequisites
+## Getting Started
 
-Before running this project, make sure you have the following installed:
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start development server: `npm run dev`
+4. Build for production: `npm run build`
 
-- **Node.js** (version 18 or higher)
-- **npm** (comes with Node.js)
+## Development
 
-## 🛠️ Installation
-
-1. **Clone the repository**
-
-   ```bash
-   git clone <repository-url>
-   cd linter-auto-backend
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Set up Git hooks** (automatically done by the prepare script)
-   ```bash
-   npm run prepare
-   ```
-
-## 🚀 Available Scripts
-
-### Development
-
-- `npm run dev` - Start development server with auto-restart
-- `npm start` - Start production server
+- `npm run dev` - Start development server with hot reload
 - `npm run build` - Build TypeScript to JavaScript
-- `npm run build:watch` - Build TypeScript with watch mode
-
-### Code Quality
-
-- `npm run lint` - Run ESLint to check code quality
-- `npm run lint:fix` - Run ESLint and automatically fix issues
-- `npm run type-check` - Run TypeScript compiler for type checking
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint issues automatically
 - `npm run format` - Format code with Prettier
-- `npm run format:check` - Check if code is properly formatted
-
-### Git Hooks
-
-- `npm run validate-pr` - Validate pull request descriptions
-
-## 🏗️ Project Structure
-
-```
-linter-auto-backend/
-├── bin/
-│   └── www.ts              # Application entry point
-├── routes/
-│   ├── index.ts            # Home route
-│   └── users.ts            # Users API routes
-├── views/
-│   ├── error.jade          # Error page template
-│   ├── index.jade          # Home page template
-│   └── layout.jade         # Layout template
-├── scripts/
-│   └── validate-pr-description.ts  # PR validation script
-├── app.ts                  # Express application setup
-├── package.json            # Project dependencies and scripts
-├── tsconfig.json           # TypeScript configuration
-└── eslint.config.js        # ESLint configuration
-```
-
-## 🌐 API Endpoints
-
-- `GET /` - Home page
-- `GET /users` - Users listing
-
-## 🔧 Configuration Files
-
-### TypeScript (`tsconfig.json`)
-
-- Strict type checking enabled
-- ES2020 target
-- CommonJS module system
-
-### ESLint (`eslint.config.js`)
-
-- TypeScript-aware linting
-- Prettier integration
-- Import sorting
-
-### Prettier
-
-- Consistent code formatting
-- Integrated with ESLint
-
-## 🐛 Development Workflow
-
-1. **Start development server**
-
-   ```bash
-   npm run dev
-   ```
-
-2. **Make code changes** - The server will automatically restart
-
-3. **Before committing** - Code is automatically formatted and linted via Git hooks
-
-4. **Type checking**
-   ```bash
-   npm run type-check
-   ```
-
-## 📝 Code Style
-
-This project uses:
-
-- **ESLint** for code linting
-- **Prettier** for code formatting
-- **Husky** for pre-commit hooks
-- **lint-staged** for staged file processing
-
-All code is automatically formatted and linted before commits.
-
-## 🧪 Testing
-
-Currently, the project includes test files:
-
-- `test-clean.ts`
-- `test-linter-errors.ts`
-
-Run tests with:
-
-```bash
-npm test
-```
-
-## 🚀 Deployment
-
-1. **Build the project**
-
-   ```bash
-   npm run build
-   ```
-
-2. **Start the production server**
-   ```bash
-   npm start
-   ```
+- `npm run format:check` - Check code formatting
 
 ## Pull Request Validation
 
-This project includes automated PR description validation to ensure all pull requests follow a consistent template structure.
+This repository includes automatic PR description validation to ensure all pull requests follow the required template.
 
-### PR Template
+### Setting Up Branch Protection
+
+The repository includes an enhanced PR validation workflow that automatically sets up branch protection rules. This happens when you push to main/master or can be triggered manually.
+
+#### Automatic Setup (Recommended)
+
+The workflow automatically sets up branch protection when you push to main/master. It will:
+
+- ✅ Require "PR Description Validation" status check to pass before merging
+- ✅ Require 1 approving review before merging
+- ✅ Dismiss stale PR approvals when new commits are pushed
+- ✅ Prevent force pushes and branch deletion
+
+#### Manual Trigger
+
+If you need to set up branch protection manually, you can trigger the workflow:
+
+1. Go to your repository Actions tab
+2. Select "PR Description Validation" workflow
+3. Click "Run workflow" button
+4. Select the branch and click "Run workflow"
+
+#### Manual GitHub Settings (Fallback)
+
+If the automatic setup doesn't work (due to permissions), you can configure manually:
+
+1. Go to your repository Settings > Branches
+2. Add rule for main/master branch
+3. Enable "Require status checks to pass before merging"
+4. Add "PR Description Validation" as a required status check
+5. Enable "Require pull request reviews before merging"
+6. Set required approving reviews to 1
+7. Enable "Dismiss stale PR approvals when new commits are pushed"
+
+### PR Description Template
 
 All pull requests must include the following sections:
 
-- **General Description** - Summary of changes and purpose
-- **What type of PR is this?** - Checkboxes for Bugfix, Feature, Enhancement, etc.
-- **Related Tickets & Documents** - Links to related issues
-- **QA Instructions, Screenshots, Recordings** - Testing instructions
-- **Did you create or update documentation in the README?** - Documentation updates
-- **Environment Variables Updated?** - Environment changes
-- **Added/updated tests?** - Test coverage
-- **Did you test this feature in all browsers?** - Browser testing
-- **Are there any post-deployment tasks we need to perform?** - Deployment tasks
-- **Did you read the Code Style and does your PR comply with that?** - Code style compliance
+- **General Description**: Summary of changes and purpose
+- **PR Type**: Bugfix, Feature, Enhancement, Documentation, Chore, or Refactor
+- **Related Tickets & Documents**: Links to related issues
+- **QA Instructions**: Testing instructions and screenshots
+- **Documentation Updates**: Whether README was updated
+- **Environment Variables**: Any environment variable changes
+- **Tests**: Whether tests were added/updated
+- **Browser Testing**: Which browsers were tested
+- **Post-deployment Tasks**: Any tasks needed after deployment
+- **Code Style Compliance**: Confirmation of code style adherence
 
-### Validation
+### Validation Process
 
-The validation automatically extracts all `###` headers from the PR template and checks if they're present in the PR description. It runs on:
+1. When a PR is created or updated, the validation workflow runs
+2. It checks if the PR description includes all required sections
+3. If validation fails:
+   - A comment is posted explaining what's missing
+   - The PR cannot be merged until the description is updated
+4. If validation passes:
+   - A success comment is posted
+   - The PR can be merged (subject to other requirements)
 
-- **GitHub Actions**: Every PR creation/update via `.github/workflows/pr-validation.yml`
-- **Local Development**: Use `npm run validate-pr "<PR_DESCRIPTION>"` to test locally
+## Contributing
 
-**Blocking Behavior:**
+1. Create a feature branch
+2. Make your changes
+3. Ensure all tests pass: `npm run lint && npm run format:check`
+4. Create a pull request with a proper description following the template
+5. Wait for validation to pass
+6. Get approval from a reviewer
+7. Merge when ready
 
-- ❌ **Failed validation**: Blocks merge button, adds failure comment with missing sections
-- ✅ **Passed validation**: Allows merge, adds success comment
-- 📝 **Automatic comments**: Detailed feedback on what's missing or confirmation of success
+## License
 
-### Setup
-
-1. **Branch Protection**: Configure branch protection rules to require the "PR Description Validation" status check
-2. **Template**: The PR template is automatically loaded from `.github/pull_request_template.md`
-3. **Local Testing**: Test your PR description locally before creating the PR
-
-### Example Usage
-
-```bash
-# Test a PR description locally
-npm run validate-pr "### General Description
-This PR adds user authentication features.
-
-### What type of PR is this?
-- [x] Feature
-- [ ] Bugfix
-
-### Related Tickets & Documents
-- Closes #123
-
-### QA Instructions, Screenshots, Recordings
-Test the login flow with different user types.
-
-### Did you create or update documentation in the README?
-- [ ] No
-
-### Environment Variables Updated?
-- [ ] No
-
-### Added/updated tests?
-- [x] Yes
-
-### Did you test this feature in all browsers?
-- [x] Chrome
-- [x] Firefox
-- [ ] Safari
-- [ ] Edge
-- [ ] No, Here is WHY: Limited testing resources
-
-### Are there any post-deployment tasks we need to perform?
-None
-
-### Did you read the Code Style and does your PR comply with that?
-- [x] Yes"
-```
+MIT

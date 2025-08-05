@@ -3,13 +3,72 @@ name: PR Description Validation
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
 
 permissions:
   pull-requests: write
   issues: write
+  checks: write
+  administration: write
+  contents: write
 
 jobs:
+  setup-branch-protection:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Branch Protection
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              // Get the default branch name
+              const repo = await github.rest.repos.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo
+              });
+              
+              const defaultBranch = repo.data.default_branch;
+              
+              console.log(`Setting up branch protection for ${defaultBranch}`);
+              
+              // Set up branch protection rules
+              await github.rest.repos.updateBranchProtection({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                branch: defaultBranch,
+                required_status_checks: {
+                  strict: true,
+                  contexts: ['validate-pr-description']
+                },
+                enforce_admins: false,
+                required_pull_request_reviews: {
+                  required_approving_review_count: 1,
+                  dismiss_stale_reviews: true,
+                  require_code_owner_reviews: false
+                },
+                restrictions: null,
+                allow_force_pushes: false,
+                allow_deletions: false
+              });
+              
+              console.log('✅ Branch protection rules applied successfully');
+              console.log('- Require status checks to pass before merging');
+              console.log('- Require pull request reviews before merging (1 approval)');
+              console.log('- Dismiss stale PR approvals when new commits are pushed');
+              console.log('- Prevent force pushes');
+              console.log('- Prevent branch deletion');
+            } catch (error) {
+              console.error('⚠️ Error setting up branch protection:', error.message);
+              console.log('You may need to set up branch protection manually in GitHub Settings > Branches');
+            }
+
   validate-pr-description:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,24 +84,45 @@ jobs:
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
+          # Check if PR body is empty or null
+          if [ -z "$PR_BODY" ] || [ "$PR_BODY" = "null" ]; then
+            echo "PR description is empty or missing"
+            echo "validation_failed=true" >> $GITHUB_OUTPUT
+            echo "missing_sections=All required sections are missing" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
           OUTPUT=$(node scripts/validate-pr-description.js "$PR_BODY" 2>&1 || true)
           echo "$OUTPUT"
           MISSING_SECTIONS=$(echo "$OUTPUT" | grep "MISSING_SECTIONS=" | sed 's/MISSING_SECTIONS="//' | sed 's/"$//' || echo "")
-          echo "missing_sections<<EOF" >> $GITHUB_OUTPUT
-          echo "$MISSING_SECTIONS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          if echo "$OUTPUT" | grep -q "PR description validation failed"; then
+          
+          if [ -n "$MISSING_SECTIONS" ]; then
+            echo "validation_failed=true" >> $GITHUB_OUTPUT
+            echo "missing_sections<<EOF" >> $GITHUB_OUTPUT
+            echo "$MISSING_SECTIONS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
             exit 1
           fi
+          
+          if echo "$OUTPUT" | grep -q "PR description validation failed"; then
+            echo "validation_failed=true" >> $GITHUB_OUTPUT
+            echo "missing_sections<<EOF" >> $GITHUB_OUTPUT
+            echo "$MISSING_SECTIONS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          echo "validation_failed=false" >> $GITHUB_OUTPUT
+          echo "PR description validation passed"
 
-      - name: Comment on PR
-        if: failure()
+      - name: Comment on PR Failure
+        if: failure() || steps.validate.outputs.validation_failed == 'true'
         uses: actions/github-script@v7
         with:
           script: |
             const missingSections = '${{ steps.validate.outputs.missing_sections }}';
-            const commentBody = '## PR Description Validation Failed\n\n' +
-              'The PR description does not meet the required standards. Please ensure your PR description includes all required sections from the template.\n\n' +
+            const commentBody = '## PR Description Validation Failed ❌\n\n' +
+              'The PR description does not meet the required standards. **This PR cannot be merged until the description is updated.**\n\n' +
               '**Missing sections:**\n' +
               (missingSections || 'Please check the template for all required sections.') + '\n\n' +
               '**Template reference:** `.github/pull_request_template.md`\n\n' +
@@ -56,7 +136,7 @@ jobs:
             });
 
       - name: Comment on PR Success
-        if: success()
+        if: success() && steps.validate.outputs.validation_failed != 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -64,6 +144,6 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '## PR Description Validation Passed\n\n' +
+              body: '## PR Description Validation Passed ✅\n\n' +
                 'Your PR description meets all the required standards! The PR is ready for review.'
             }); 
