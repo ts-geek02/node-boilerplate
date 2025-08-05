@@ -51,8 +51,17 @@ function validatePRDescription(prBody: string): ValidationResult {
   const errors: string[] = [];
   const missingHeaders: string[] = [];
 
+  // Debug: Print the headers we're looking for
+  // eslint-disable-next-line no-console
+  console.log('🔍 Required headers from template:');
+  requiredHeaders.forEach(header => {
+    // eslint-disable-next-line no-console
+    console.log(`   • ${header}`);
+  });
+
   // Check if each required header is present in the PR description
   for (const header of requiredHeaders) {
+    // Simple string inclusion check
     if (!prBody.includes(header)) {
       missingHeaders.push(header);
       errors.push(`Missing required section: ${header}`);
@@ -115,8 +124,6 @@ if (!results.isValid && results.missingHeaders) {
   const missingSectionsText = results.missingHeaders
     .map(header => `- ${header}`)
     .join('\n');
-  // eslint-disable-next-line no-console
-  console.log(`::set-output name=missing_sections::${missingSectionsText}`);
   // eslint-disable-next-line no-console
   console.log(`MISSING_SECTIONS="${missingSectionsText}"`);
 }

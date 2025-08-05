@@ -33,37 +33,25 @@ This repository includes automatic PR description validation to ensure all pull 
 
 ### Setting Up Branch Protection
 
-The repository includes an enhanced PR validation workflow that automatically sets up branch protection rules. This happens when you push to main/master or can be triggered manually.
+To prevent merging PRs that don't meet the description requirements, you need to set up branch protection rules manually:
 
-#### Automatic Setup (Recommended)
-
-The workflow automatically sets up branch protection when you push to main/master. It will:
-
-- ✅ Require "PR Description Validation" status check to pass before merging
-- ✅ Require 1 approving review before merging
-- ✅ Dismiss stale PR approvals when new commits are pushed
-- ✅ Prevent force pushes and branch deletion
-
-#### Manual Trigger
-
-If you need to set up branch protection manually, you can trigger the workflow:
-
-1. Go to your repository Actions tab
-2. Select "PR Description Validation" workflow
-3. Click "Run workflow" button
-4. Select the branch and click "Run workflow"
-
-#### Manual GitHub Settings (Fallback)
-
-If the automatic setup doesn't work (due to permissions), you can configure manually:
+#### Manual Setup (Required)
 
 1. Go to your repository Settings > Branches
 2. Add rule for main/master branch
 3. Enable "Require status checks to pass before merging"
-4. Add "PR Description Validation" as a required status check
+4. Add "validate-pr-description" as a required status check
 5. Enable "Require pull request reviews before merging"
 6. Set required approving reviews to 1
 7. Enable "Dismiss stale PR approvals when new commits are pushed"
+8. Save changes
+
+#### What This Does
+
+- ✅ Requires "validate-pr-description" status check to pass before merging
+- ✅ Requires 1 approving review before merging
+- ✅ Dismisses stale PR approvals when new commits are pushed
+- ✅ Prevents force pushes and branch deletion
 
 ### PR Description Template
 
